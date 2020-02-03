@@ -18,11 +18,15 @@
 #include "STLFace.h"
 #include <fstream>
 #include "ofMain.h"
+#include "Miniball.hpp"
 
 class ofxSTLModel {
 public:
 
 	ofxSTLModel();
+    
+    // Is this a valid STL model?
+    static bool validSTL(string _path);
 	
 	/**
 	 * Draws the STL model with GL triangles
@@ -33,6 +37,14 @@ public:
 	 * Read a binary encoded STL file. (put it in the data folder)
 	 */
 	void read(string path);
+    
+    void readToMesh(string path, ofVboMesh* mesh, int nEveryTriangles);
+    void readToMeshBinary(string path, ofVboMesh* mesh, int nEveryTriangles);
+    void readToMeshAscii(string path, ofVboMesh* mesh, int nEveryTriangles);
+    void writeFromMesh(string path, float angle, ofVec3f pivot, ofVec3f axis);
+    void writeFromMesh(string path, float scale, float ax, float ay, float az, ofVec3f translation);
+    ofVec3f getSTLNormal(ofVec3f v1, ofVec3f v2, ofVec3f v3);
+    ofVec3f getSTLNormal(float* v);
 	
 	/**
 	 * Write a binary encoded STL file. (created in the data folder)
@@ -66,7 +78,18 @@ public:
 	 * Normalizes the object to a absolute scale 
 	 */
 	void normalize(float m);
+    
+    void bounding_sphere(float& radius, float* center, const float* V, const int n);
 	
+    void clear();
+    
+    vector<ofVec3f> vertices;
+    vector<ofVec3f> normals;
+    
+    
+    float minVal = -0.5;
+    float maxVal = 0.5;
+    
 private:
 	float minx,maxx,miny,maxy,minz,maxz,centerx,centery,centerz;
 	float mult;
